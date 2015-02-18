@@ -38,14 +38,23 @@ module sine_dds #
     input  wire                    clk,
     input  wire                    rst,
 
+    /*
+     * AXI stream phase input
+     */
     input  wire [PHASE_WIDTH-1:0]  input_phase_tdata,
     input  wire                    input_phase_tvalid,
     output wire                    input_phase_tready,
 
+    /*
+     * AXI stream phase step input
+     */
     input  wire [PHASE_WIDTH-1:0]  input_phase_step_tdata,
     input  wire                    input_phase_step_tvalid,
     output wire                    input_phase_step_tready,
 
+    /*
+     * AXI stream sample output
+     */
     output wire [OUTPUT_WIDTH-1:0] output_sample_i_tdata,
     output wire [OUTPUT_WIDTH-1:0] output_sample_q_tdata,
     output wire                    output_sample_tvalid,
