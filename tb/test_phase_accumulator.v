@@ -33,6 +33,8 @@ module test_phase_accumulator;
 
 // Parameters
 parameter WIDTH = 32;
+parameter INITIAL_PHASE = 0;
+parameter INITIAL_PHASE_STEP = 0;
 
 // Inputs
 reg clk = 0;
@@ -72,7 +74,9 @@ initial begin
 end
 
 phase_accumulator #(
-    .WIDTH(WIDTH)
+    .WIDTH(WIDTH),
+    .INITIAL_PHASE(INITIAL_PHASE),
+    .INITIAL_PHASE_STEP(INITIAL_PHASE_STEP)
 )
 UUT (
     .clk(clk),

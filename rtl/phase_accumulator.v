@@ -31,7 +31,9 @@ THE SOFTWARE.
  */
 module phase_accumulator #
 (
-    parameter WIDTH = 32
+    parameter WIDTH = 32,
+    parameter INITIAL_PHASE = 0,
+    parameter INITIAL_PHASE_STEP = 0
 )
 (
     input  wire             clk,
@@ -59,8 +61,8 @@ module phase_accumulator #
     input  wire             output_phase_tready
 );
 
-reg [WIDTH-1:0] phase_reg = 0;
-reg [WIDTH-1:0] phase_step_reg = 0;
+reg [WIDTH-1:0] phase_reg = INITIAL_PHASE;
+reg [WIDTH-1:0] phase_step_reg = INITIAL_PHASE_STEP;
 
 assign input_phase_tready = output_phase_tready;
 assign input_phase_step_tready = 1;
@@ -69,8 +71,8 @@ assign output_phase_tvalid = 1;
 
 always @(posedge clk) begin
     if (rst) begin
-        phase_reg <= 0;
-        phase_step_reg <= 0;
+        phase_reg <= INITIAL_PHASE;
+        phase_step_reg <= INITIAL_PHASE_STEP;
     end else begin
         if (input_phase_tready & input_phase_tvalid) begin
             phase_reg <= input_phase_tdata;

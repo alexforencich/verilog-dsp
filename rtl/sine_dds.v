@@ -32,7 +32,9 @@ THE SOFTWARE.
 module sine_dds #
 (
     parameter PHASE_WIDTH = 32,
-    parameter OUTPUT_WIDTH = 16
+    parameter OUTPUT_WIDTH = 16,
+    parameter INITIAL_PHASE = 0,
+    parameter INITIAL_PHASE_STEP = 0
 )
 (
     input  wire                    clk,
@@ -66,7 +68,9 @@ wire phase_tvalid;
 wire phase_tready;
 
 phase_accumulator #(
-    .WIDTH(PHASE_WIDTH)
+    .WIDTH(PHASE_WIDTH),
+    .INITIAL_PHASE(INITIAL_PHASE),
+    .INITIAL_PHASE_STEP(INITIAL_PHASE_STEP)
 )
 phase_accumulator_inst (
     .clk(clk),

@@ -34,6 +34,8 @@ module test_sine_dds;
 // Parameters
 parameter PHASE_WIDTH = 32;
 parameter OUTPUT_WIDTH = 16;
+parameter INITIAL_PHASE = 0;
+parameter INITIAL_PHASE_STEP = 0;
 
 // Inputs
 reg clk = 0;
@@ -76,7 +78,9 @@ end
 
 sine_dds #(
     .PHASE_WIDTH(PHASE_WIDTH),
-    .OUTPUT_WIDTH(OUTPUT_WIDTH)
+    .OUTPUT_WIDTH(OUTPUT_WIDTH),
+    .INITIAL_PHASE(INITIAL_PHASE),
+    .INITIAL_PHASE_STEP(INITIAL_PHASE_STEP)
 )
 UUT (
     .clk(clk),
