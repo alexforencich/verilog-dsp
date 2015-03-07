@@ -215,8 +215,92 @@ def bench():
         yield delay(100)
 
         yield clk.posedge
-        print("test 3: sinewave")
+        print("test 3: source pause")
         current_test.next = 3
+
+        # reset integrator
+        rst.next = 1
+        yield clk.posedge
+        rst.next = 0
+        yield clk.posedge
+
+        y = list(range(100)) + [0,0,0,0,0]
+        ref = cic_decimate(y, N, M, rate)
+
+        test_frame = axis_ep.AXIStreamFrame()
+        test_frame.data = y + [0]*10
+        
+        input_source_queue.put(test_frame)
+        
+        yield clk.posedge
+        yield clk.posedge
+
+        while input_tvalid:
+            input_source_pause.next = True
+            yield clk.posedge
+            yield clk.posedge
+            yield clk.posedge
+            input_source_pause.next = False
+            yield clk.posedge
+
+        yield clk.posedge
+
+        lst = []
+
+        while not output_sink_queue.empty():
+            lst += output_sink_queue.get(False).data
+
+        print(lst)
+        print(ref)
+        assert contains(ref, lst)
+
+        yield delay(100)
+
+        yield clk.posedge
+        print("test 4: sink pause")
+        current_test.next = 4
+
+        # reset integrator
+        rst.next = 1
+        yield clk.posedge
+        rst.next = 0
+        yield clk.posedge
+
+        y = list(range(100)) + [0,0,0,0,0]
+        ref = cic_decimate(y, N, M, rate)
+
+        test_frame = axis_ep.AXIStreamFrame()
+        test_frame.data = y + [0]*10
+        
+        input_source_queue.put(test_frame)
+        
+        yield clk.posedge
+        yield clk.posedge
+
+        while input_tvalid:
+            output_sink_pause.next = True
+            yield clk.posedge
+            yield clk.posedge
+            yield clk.posedge
+            output_sink_pause.next = False
+            yield clk.posedge
+
+        yield clk.posedge
+
+        lst = []
+
+        while not output_sink_queue.empty():
+            lst += output_sink_queue.get(False).data
+
+        print(lst)
+        print(ref)
+        assert contains(ref, lst)
+
+        yield delay(100)
+
+        yield clk.posedge
+        print("test 5: sinewave")
+        current_test.next = 5
 
         # reset integrator
         rst.next = 1
@@ -259,8 +343,8 @@ def bench():
         yield delay(100)
 
         yield clk.posedge
-        print("test 4: rate of 4")
-        current_test.next = 4
+        print("test 6: rate of 4")
+        current_test.next = 6
 
         # reset integrator
         rst.next = 1
@@ -274,6 +358,53 @@ def bench():
 
         x = np.arange(0,100)
         y = np.r_[(np.sin(2*np.pi*x/50)*1024).astype(int), [0]*10]
+        ref = cic_decimate(y, N, M, rate)
+
+        ys = y
+        ys[y < 0] += 2**WIDTH
+
+        refs = ref
+        refs[ref < 0] += 2**REG_WIDTH
+
+        test_frame = axis_ep.AXIStreamFrame()
+        test_frame.data = list(ys) + [0]*10
+        
+        input_source_queue.put(test_frame)
+        
+        yield clk.posedge
+        yield clk.posedge
+
+        while input_tvalid:
+            yield clk.posedge
+
+        yield clk.posedge
+
+        lst = []
+
+        while not output_sink_queue.empty():
+            lst += output_sink_queue.get(False).data
+
+        print(lst)
+        print(ref)
+        assert contains(ref, lst)
+
+        yield delay(100)
+
+        yield clk.posedge
+        print("test 7: DC")
+        current_test.next = 7
+
+        # reset integrator
+        rst.next = 1
+        yield clk.posedge
+        rst.next = 0
+        yield clk.posedge
+
+        rate.next = 2
+
+        yield clk.posedge
+
+        y = np.r_[np.ones(1000).astype(int)*1000, [0]*10]
         ref = cic_decimate(y, N, M, rate)
 
         ys = y

@@ -209,8 +209,80 @@ def bench():
         yield delay(100)
 
         yield clk.posedge
-        print("test 3: sinewave")
+        print("test 3: source pause")
         current_test.next = 3
+
+        y = list(range(100)) + [0,0]
+        ref = cic_interpolate(y, N, M, rate)
+
+        test_frame = axis_ep.AXIStreamFrame()
+        test_frame.data = y + [0]*5
+        
+        input_source_queue.put(test_frame)
+        
+        yield clk.posedge
+        yield clk.posedge
+
+        while input_tvalid:
+            input_source_pause.next = True
+            yield clk.posedge
+            yield clk.posedge
+            yield clk.posedge
+            input_source_pause.next = False
+            yield clk.posedge
+
+        yield clk.posedge
+
+        lst = []
+
+        while not output_sink_queue.empty():
+            lst += output_sink_queue.get(False).data
+
+        print(lst)
+        print(ref)
+        assert contains(ref, lst)
+
+        yield delay(100)
+
+        yield clk.posedge
+        print("test 4: sink pause")
+        current_test.next = 4
+
+        y = list(range(100)) + [0,0]
+        ref = cic_interpolate(y, N, M, rate)
+
+        test_frame = axis_ep.AXIStreamFrame()
+        test_frame.data = y + [0]*5
+        
+        input_source_queue.put(test_frame)
+        
+        yield clk.posedge
+        yield clk.posedge
+
+        while input_tvalid:
+            output_sink_pause.next = True
+            yield clk.posedge
+            yield clk.posedge
+            yield clk.posedge
+            output_sink_pause.next = False
+            yield clk.posedge
+
+        yield clk.posedge
+
+        lst = []
+
+        while not output_sink_queue.empty():
+            lst += output_sink_queue.get(False).data
+
+        print(lst)
+        print(ref)
+        assert contains(ref, lst)
+
+        yield delay(100)
+
+        yield clk.posedge
+        print("test 5: sinewave")
+        current_test.next = 5
 
         x = np.arange(0,100)
         y = np.r_[(np.sin(2*np.pi*x/50)*1024).astype(int), [0,0]]
@@ -247,8 +319,8 @@ def bench():
         yield delay(100)
 
         yield clk.posedge
-        print("test 4: rate of 4")
-        current_test.next = 4
+        print("test 6: rate of 4")
+        current_test.next = 6
 
         rate.next = 4
 
