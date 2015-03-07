@@ -55,7 +55,7 @@ module cic_interpolator #(
     input  wire                      output_tready,
 
     /*
-     *
+     * Configuration
      */
     input  wire [$clog2(RMAX+1)-1:0] rate
 );
