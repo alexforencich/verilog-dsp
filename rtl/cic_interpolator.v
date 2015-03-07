@@ -82,13 +82,10 @@ reg [REG_WIDTH-1:0] comb_reg[N-1:0];
 
 reg [REG_WIDTH-1:0] int_reg[N-1:0];
 
-wire transfer_in = input_tvalid & output_tready & (cycle_reg == 0);
-wire transfer_out = (input_tvalid | (cycle_reg != 0)) & output_tready;
-
-assign input_tready = transfer_in;
+assign input_tready = output_tready & (cycle_reg == 0);
 
 assign output_tdata = int_reg[N-1];
-assign output_tvalid = transfer_out;
+assign output_tvalid = input_tvalid | (cycle_reg != 0);
 
 genvar k;
 integer i;
@@ -119,7 +116,7 @@ for (k = 0; k < N; k = k + 1) begin : comb
             end
             comb_reg[k] <= 0;
         end else begin
-            if (transfer_in) begin
+            if (input_tready & input_tvalid) begin
                 if (k == 0) begin
                     delay_reg[0] <= $signed(input_tdata);
                     comb_reg[k] <= $signed(input_tdata) - $signed(delay_reg[M-1]);
@@ -146,7 +143,7 @@ for (k = 0; k < N; k = k + 1) begin : integrator
         if (rst) begin
             int_reg[k] <= 0;
         end else begin
-            if (transfer_out) begin
+            if (output_tready & output_tvalid) begin
                 if (k == 0) begin
                     if (cycle_reg == 0) begin
                         int_reg[k] <= $signed(int_reg[k]) + $signed(comb_reg[N-1]);
@@ -165,7 +162,7 @@ always @(posedge clk) begin
     if (rst) begin
         cycle_reg <= 0;
     end else begin
-        if (transfer_out) begin
+        if (output_tready & output_tvalid) begin
             if (cycle_reg < RMAX - 1 && cycle_reg < rate - 1) begin
                 cycle_reg <= cycle_reg + 1;
             end else begin
