@@ -134,10 +134,9 @@ def bench():
 
     sample_sink = axis_ep.AXIStreamSink(clk,
                                         rst,
-                                        tdata=ConcatSignal(output_sample_q_tdata, output_sample_i_tdata),
+                                        tdata=(output_sample_i_tdata, output_sample_q_tdata),
                                         tvalid=output_sample_tvalid,
                                         tready=output_sample_tready,
-                                        tkeep=Signal(intbv(3)[2:]),
                                         fifo=sample_sink_queue,
                                         pause=sample_sink_pause,
                                         name='sample_sink')
@@ -207,8 +206,7 @@ def bench():
             rx_frame = sample_sink_queue.get(False)
             INPUT_WIDTH = OUTPUT_WIDTH+2
             x = int((fcw*j + offset) / 2**(PHASE_WIDTH-INPUT_WIDTH))
-            c = rx_frame.data[0]
-            s = rx_frame.data[1]
+            c, s = rx_frame.data[0]
 
             # sign bit
             if c >= 2**(OUTPUT_WIDTH-1):
@@ -254,8 +252,7 @@ def bench():
             rx_frame = sample_sink_queue.get(False)
             INPUT_WIDTH = OUTPUT_WIDTH+2
             x = int((fcw*j + offset) / 2**(PHASE_WIDTH-INPUT_WIDTH))
-            c = rx_frame.data[0]
-            s = rx_frame.data[1]
+            c, s = rx_frame.data[0]
 
             # sign bit
             if c >= 2**(OUTPUT_WIDTH-1):
@@ -301,8 +298,7 @@ def bench():
             rx_frame = sample_sink_queue.get(False)
             INPUT_WIDTH = OUTPUT_WIDTH+2
             x = int((fcw*j + offset) / 2**(PHASE_WIDTH-INPUT_WIDTH))
-            c = rx_frame.data[0]
-            s = rx_frame.data[1]
+            c, s = rx_frame.data[0]
 
             # sign bit
             if c >= 2**(OUTPUT_WIDTH-1):
