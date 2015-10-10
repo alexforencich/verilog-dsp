@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """
 
 Copyright (c) 2015 Alex Forencich
@@ -25,7 +25,11 @@ THE SOFTWARE.
 
 from myhdl import *
 import os
-from Queue import Queue
+
+try:
+    from queue import Queue
+except ImportError:
+    from Queue import Queue
 
 import axis_ep
 import i2s_ep
@@ -227,8 +231,8 @@ def bench():
     return dut, i2s_ctrl, i2s_source, output_sink, clkgen, check
 
 def contains(small, big):
-    for i in xrange(len(big)-len(small)+1):
-        for j in xrange(len(small)):
+    for i in range(len(big)-len(small)+1):
+        for j in range(len(small)):
             if big[i+j] != small[j]:
                 break
         else:

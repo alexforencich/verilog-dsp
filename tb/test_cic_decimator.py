@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """
 
 Copyright (c) 2015 Alex Forencich
@@ -25,7 +25,12 @@ THE SOFTWARE.
 
 from myhdl import *
 import os
-from Queue import Queue
+
+try:
+    from queue import Queue
+except ImportError:
+    from Queue import Queue
+
 import numpy as np
 import math
 
@@ -319,7 +324,7 @@ def bench():
         refs[ref < 0] += 2**REG_WIDTH
 
         test_frame = axis_ep.AXIStreamFrame()
-        test_frame.data = list(ys) + [0]*10
+        test_frame.data = list(map(int, ys)) + [0]*10
 
         input_source_queue.put(test_frame)
         
@@ -367,7 +372,7 @@ def bench():
         refs[ref < 0] += 2**REG_WIDTH
 
         test_frame = axis_ep.AXIStreamFrame()
-        test_frame.data = list(ys) + [0]*10
+        test_frame.data = list(map(int, ys)) + [0]*10
         
         input_source_queue.put(test_frame)
         
@@ -414,7 +419,7 @@ def bench():
         refs[ref < 0] += 2**REG_WIDTH
 
         test_frame = axis_ep.AXIStreamFrame()
-        test_frame.data = list(ys) + [0]*10
+        test_frame.data = list(map(int, ys)) + [0]*10
         
         input_source_queue.put(test_frame)
         
@@ -465,8 +470,8 @@ def cic_decimate(y, N=2, M=1, R=2):
     return y
 
 def contains(small, big):
-    for i in xrange(len(big)-len(small)+1):
-        for j in xrange(len(small)):
+    for i in range(len(big)-len(small)+1):
+        for j in range(len(small)):
             if big[i+j] != small[j]:
                 break
         else:
