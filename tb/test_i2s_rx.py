@@ -228,7 +228,7 @@ def bench():
 
         raise StopSimulation
 
-    return dut, i2s_ctrl, i2s_source, output_sink, clkgen, check
+    return instances()
 
 def contains(small, big):
     for i in range(len(big)-len(small)+1):

@@ -321,7 +321,7 @@ def bench():
 
         raise StopSimulation
 
-    return dut, phase_source, phase_step_source, sample_sink, clkgen, check
+    return instances()
 
 def test_bench():
     sim = Simulation(bench())

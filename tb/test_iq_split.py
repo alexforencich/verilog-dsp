@@ -359,7 +359,7 @@ def bench():
 
         raise StopSimulation
 
-    return dut, input_source, output_i_sink, output_q_sink, clkgen, check
+    return instances()
 
 def test_bench():
     sim = Simulation(bench())

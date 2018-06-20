@@ -444,7 +444,7 @@ def bench():
 
         raise StopSimulation
 
-    return dut, input_source, output_sink, clkgen, check
+    return instances()
 
 def cic_decimate(y, N=2, M=1, R=2):
     y = np.array(y)

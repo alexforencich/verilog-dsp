@@ -58,7 +58,7 @@ def I2SControl(clk, rst,
                     else:
                         sck.next = True
 
-    return logic
+    return instances()
 
 
 def I2SSource(clk, rst,
@@ -172,5 +172,5 @@ def I2SSink(clk, rst,
 
                 last_sck = int(sck)
 
-    return logic
+    return instances()
 
