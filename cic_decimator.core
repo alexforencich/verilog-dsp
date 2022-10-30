@@ -1,0 +1,29 @@
+CAPI=2:
+
+name : ::verilog-dsp:0
+
+filesets:
+  rtl:
+    files:
+      - rtl/cic_decimator.v : {file_type : verilogSource}
+
+  sky130:
+    files: [data/sky130.tcl : {file_type : tclSource}]
+
+targets:
+  default:
+    filesets : [rtl]
+
+  lint_cic_decimator:
+    default_tool: verilator
+    filesets : [rtl]
+    tools:
+      verilator:
+        mode: lint-only
+    toplevel : cic_decimator
+
+  sky130_cic_decimator:
+    default_tool : openlane
+    filesets : [rtl, sky130]
+    toplevel : cic_decimator
+    
